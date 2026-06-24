@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trilha Patrimonial — Caminho para o Setor Patrimonial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Sans+3:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1EEE3;
+    --bg-deep:#E7E0CB;
+    --surface:#FFFEFA;
+    --surface-2:#FBF8EF;
+    --ink:#221F19;
+    --ink-soft:#5B5746;
+    --ink-faint:#8C866E;
+    --green:#2C4430;
+    --green-deep:#1B2B1F;
+    --green-pale:#E3E9DD;
+    --clay:#B5532E;
+    --clay-deep:#8A3D20;
+    --clay-pale:#F3E1D4;
+    --gold:#C0922F;
+    --gold-pale:#F1E5C4;
+    --border:#DCD4B9;
+    --done:#3E6B45;
+    --shadow: 0 1px 2px rgba(34,31,25,.06), 0 8px 24px -8px rgba(34,31,25,.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(var(--bg-deep) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-deep) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity:.35;
+    pointer-events:none;
+    z-index:0;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    color:var(--green-deep);
+    font-weight:600;
+    margin:0 0 .4em;
+    letter-spacing:-.01em;
+  }
+  .mono{font-family:'Space Mono', monospace;}
+  a{color:var(--clay-deep);}
+  .wrap{
+    position:relative; z-index:1;
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 24px 80px;
+  }
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:var(--green-deep);
+    color:#F3EFE2;
+    overflow:hidden;
+    padding:56px 24px 40px;
+    border-bottom:6px solid var(--clay);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(243,239,226,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(243,239,226,.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:280px; height:280px;
+    border:1px dashed rgba(243,239,226,.25);
+    border-radius:50%;
+  }
+  .hero-inner{position:relative; max-width:1080px; margin:0 auto;}
+  .hero-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Space Mono', monospace;
+    font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--gold-pale);
+    border:1px solid rgba(243,239,226,.35);
+    padding:5px 12px; border-radius:999px;
+    margin-bottom:22px;
+  }
+  .hero-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .hero h1{
+    color:#FBF8EF;
+    font-size:clamp(32px, 5vw, 52px);
+    line-height:1.05;
+    max-width:760px;
+  }
+  .hero p.lede{
+    font-size:18px; color:#D8D2BD; max-width:600px; margin:0 0 28px;
+  }
+  .hero-stats{
+    display:flex; flex-wrap:wrap; gap:14px;
+    margin-top:8px;
+  }
+  .stat-card{
+    background:rgba(243,239,226,.06);
+    border:1px solid rgba(243,239,226,.18);
+    border-radius:10px;
+    padding:14px 18px;
+    min-width:140px;
+  }
+  .stat-card .num{
+    font-family:'Fraunces', serif; font-size:30px; color:var(--gold-pale); font-weight:600;
+  }
+  .stat-card .label{font-size:12.5px; color:#C8C2AC;}
+  /* ---------- NAV (dossier tabs) ---------- */
+  .nav-shell{
+    background:var(--green-deep);
+    padding:0 24px;
+    position:sticky; top:0; z-index:30;
+    box-shadow:0 2px 10px rgba(0,0,0,.18);
+  }
+  .nav{
+    max-width:1080px; margin:0 auto;
+    display:flex; gap:4px; overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .nav::-webkit-scrollbar{display:none;}
+  .nav button{
+    appearance:none; border:none; cursor:pointer;
+    background:transparent;
+    color:#BFB9A2;
+    font-family:'Space Mono', monospace;
+    font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+    padding:14px 16px 12px;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+    transition:.15s;
+  }
+  .nav button:hover{color:#F3EFE2;}
+  .nav button.active{
+    color:#FBF8EF;
+    border-bottom-color:var(--clay);
+    background:rgba(243,239,226,.05);
+  }
+  /* ---------- SECTIONS ---------- */
+  section.panel{display:none; padding-top:40px; animation:fade .25s ease;}
+  section.panel.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+  .section-head{margin-bottom:28px;}
+  .eyebrow{
+    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--clay-deep); margin-bottom:8px; display:block;
+  }
+  .section-head h2{font-size:clamp(24px,3vw,32px);}
+  .section-head .sub{color:var(--ink-soft); max-width:640px; font-size:15.5px;}
+  /* progress */
+  .progress-block{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:22px 24px; box-shadow:var(--shadow); margin-bottom:32px;
+  }
+  .progress-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .progress-top .pct{font-family:'Fraunces',serif; font-size:34px; color:var(--green-deep); font-weight:600;}
+  .progress-bar{height:10px; border-radius:999px; background:var(--green-pale); overflow:hidden; margin-top:12px;}
+  .progress-bar > div{height:100%; background:linear-gradient(90deg, var(--clay), var(--gold)); width:0%; transition:width .4s ease;}
+  .progress-note{font-size:13px; color:var(--ink-faint); margin-top:8px;}
+  /* matricula cards (signature element) */
+  .grid{display:grid; gap:16px;}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:760px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr;}}
+  .matricula{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 20px 18px;
+    box-shadow:var(--shadow);
+  }
+  .matricula .reg{
+    position:absolute; top:14px; right:16px;
+    font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-faint);
+    border:1px solid var(--border); border-radius:6px; padding:2px 7px;
+  }
+  .matricula h3{font-size:17px; margin-bottom:6px; padding-right:70px;}
+  .matricula p{font-size:14px; color:var(--ink-soft); margin:0 0 10px;}
+  .tagline{font-size:12.5px; color:var(--clay-deep); font-weight:600; text-transform:uppercase; letter-spacing:.03em;}
+  /* accordion / phase cards */
+  .phase{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    margin-bottom:16px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .phase-head{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:18px 22px; cursor:pointer; background:var(--surface-2);
+  }
+  .phase-head:hover{background:var(--green-pale);}
+  .phase-head .ph-left{display:flex; align-items:center; gap:14px;}
+  .ph-num{
+    font-family:'Fraunces',serif; font-weight:700; font-size:20px;
+    background:var(--green-deep); color:var(--gold-pale);
+    width:42px; height:42px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .ph-titles h3{margin:0; font-size:18px;}
+  .ph-titles span{font-size:13px; color:var(--ink-faint);}
+  .ph-chevron{font-size:20px; color:var(--ink-faint); transition:transform .2s;}
+  .phase.open .ph-chevron{transform:rotate(180deg);}
+  .phase-body{display:none; padding:6px 22px 22px;}
+  .phase.open .phase-body{display:block;}
+  .topic-group{margin-top:14px;}
+  .topic-group h4{font-size:14.5px; color:var(--green); margin-bottom:8px; display:flex; align-items:center; gap:8px;}
+  .topic-group h4::before{content:""; width:8px; height:8px; background:var(--clay); border-radius:50%; display:inline-block;}
+  label.check{
+    display:flex; align-items:flex-start; gap:10px;
+    padding:7px 4px; font-size:14.5px; cursor:pointer; border-radius:6px;
+  }
+  label.check:hover{background:var(--surface-2);}
+  label.check input{margin-top:3px; width:16px; height:16px; accent-color:var(--clay);}
+  label.check span.done{ text-decoration:line-through; color:var(--ink-faint);}
+  /* content tab */
+  .topic-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    margin-bottom:14px; box-shadow:var(--shadow); overflow:hidden;
+  }
+  .topic-card summary{
+    list-style:none; cursor:pointer; padding:18px 22px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    font-family:'Fraunces',serif; font-size:18px; color:var(--green-deep); font-weight:600;
+  }
+  .topic-card summary::-webkit-details-marker{display:none;}
+  .topic-card summary .plus{
+    width:26px; height:26px; border-radius:50%; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; color:var(--clay-deep);
+  }
+  .topic-card[open] summary .plus{transform:rotate(45deg);}
+  .topic-card .tc-body{padding:0 22px 22px; font-size:15px; color:var(--ink);}
+  .topic-card .tc-body h5{font-family:'Source Sans 3'; font-size:14.5px; color:var(--clay-deep); margin:16px 0 6px; text-transform:uppercase; letter-spacing:.03em;}
+  .topic-card .tc-body ul{margin:6px 0 10px; padding-left:20px;}
+  .topic-card .tc-body li{margin-bottom:4px;}
+  .pill-row{display:flex; gap:8px; flex-wrap:wrap; padding:0 22px 16px;}
+  .pill{
+    font-family:'Space Mono',monospace; font-size:11px; background:var(--gold-pale); color:var(--clay-deep);
+    padding:3px 9px; border-radius:999px; border:1px solid var(--border);
+  }
+  /* videos */
+  .video-section{margin-bottom:34px;}
+  .video-section > h3{font-size:19px; margin-bottom:4px;}
+  .video-section > p.desc{font-size:14px; color:var(--ink-soft); margin-bottom:14px; max-width:680px;}
+  .video-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  @media (max-width:760px){.video-grid{grid-template-columns:1fr;}}
+  .video-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow);}
+  .video-card .frame-wrap{position:relative; width:100%; padding-top:56.25%; background:#000;}
+  .video-card iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+  .video-card .vinfo{padding:12px 16px;}
+  .video-card .vinfo h4{font-size:14.5px; margin:0 0 3px; font-family:'Source Sans 3'; font-weight:600; color:var(--ink);}
+  .video-card .vinfo span{font-size:12px; color:var(--ink-faint);}
+  /* glossary */
+  .gloss-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:2px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  @media (max-width:700px){.gloss-grid{grid-template-columns:1fr;}}
+  .gloss-item{background:var(--surface); padding:16px 18px;}
+  .gloss-item .term{font-family:'Space Mono',monospace; font-weight:700; color:var(--clay-deep); font-size:13.5px; display:block; margin-bottom:4px;}
+  .gloss-item p{margin:0; font-size:13.8px; color:var(--ink-soft);}
+  /* disclaimer */
+  .disclaimer{
+    background:var(--gold-pale); border:1px solid var(--gold); border-radius:10px;
+    padding:14px 18px; font-size:13.5px; color:var(--clay-deep); margin:20px 0 0;
+  }
+  /* footer */
+  footer{
+    text-align:center; padding:36px 24px 60px; color:var(--ink-faint); font-size:13px;
+    position:relative; z-index:1;
+  }
+  .timeline{position:relative; padding-left:26px; margin-top:20px;}
+  .timeline::before{content:""; position:absolute; left:7px; top:4px; bottom:4px; width:2px; background:var(--border);}
+  .tl-item{position:relative; margin-bottom:22px;}
+  .tl-item::before{
+    content:""; position:absolute; left:-26px; top:3px; width:14px; height:14px; border-radius:50%;
+    background:var(--clay); border:3px solid var(--surface); box-shadow:0 0 0 1px var(--border);
+  }
+  .tl-item h4{font-size:15.5px; margin-bottom:3px;}
+  .tl-item p{font-size:13.8px; color:var(--ink-soft); margin:0;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-tag"><span class="dot"></span> Administrativo → Patrimonial · plano de 90 dias</span>
+    <h1>Sua trilha de estudo para entrar com segurança no setor Patrimonial.</h1>
+    <p class="lede">Você já conhece a empresa, está cursando Direito e quer dar o próximo passo. Esta trilha organiza tudo o que falta — teoria, vocabulário, documentos e vídeo aulas — em uma sequência prática de estudo.</p>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="num">90</div><div class="label">dias de plano</div></div>
+      <div class="stat-card"><div class="num">04</div><div class="label">fases de estudo</div></div>
+      <div class="stat-card"><div class="num">09</div><div class="label">áreas de conteúdo</div></div>
+      <div class="stat-card"><div class="num">16</div><div class="label">vídeo aulas selecionadas</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-shell">
+  <nav class="nav" id="tabNav">
+    <button data-tab="geral" class="active">Visão Geral</button>
+    <button data-tab="trilha">Trilha de 90 Dias</button>
+    <button data-tab="conteudo">Conteúdo de Estudo</button>
+    <button data-tab="videos">Vídeo Aulas</button>
+    <button data-tab="glossario">Glossário</button>
+  </nav>
+</div>
+
+<div class="wrap">
+
+  <!-- ===================== VISÃO GERAL ===================== -->
+  <section class="panel active" id="panel-geral">
+    <div class="section-head">
+      <span class="eyebrow">Matrícula 001 · Visão geral</span>
+      <h2>O que é, na prática, o setor Patrimonial</h2>
+      <p class="sub">O Patrimonial existe para organizar, proteger e planejar a transferência do patrimônio das famílias do agronegócio — garantindo que bens e negócios rurais continuem estruturados entre gerações. É uma área que mistura Direito, Administração, Contabilidade e Agronegócio.</p>
+    </div>
+
+    <div class="progress-block">
+      <div class="progress-top">
+        <div>
+          <div class="tagline">Seu progresso na trilha</div>
+          <div class="pct" id="pctText">0%</div>
+        </div>
+        <div class="progress-note" style="max-width:280px; text-align:right;">Marque os tópicos na aba <strong>Trilha de 90 Dias</strong> para acompanhar aqui.</div>
+      </div>
+      <div class="progress-bar"><div id="progressFill"></div></div>
+      <div class="progress-note" id="progressCount">0 de 0 tópicos concluídos</div>
+    </div>
+
+    <div class="grid cols-3">
+      <div class="matricula"><span class="reg">M-01</span><span class="tagline">Mapeamento</span><h3>Levantamento patrimonial</h3><p>Fazendas, terras arrendadas, máquinas, veículos, participações societárias, aplicações financeiras, imóveis urbanos e rebanhos — tudo é mapeado para saber exatamente o que a família possui.</p></div>
+      <div class="matricula"><span class="reg">M-02</span><span class="tagline">Estrutura</span><h3>Estruturação societária</h3><p>Análise se a forma como os bens estão organizados é adequada: criação de holdings rurais, separação entre patrimônio pessoal e empresarial, distribuição de cotas.</p></div>
+      <div class="matricula"><span class="reg">M-03</span><span class="tagline">Futuro</span><h3>Planejamento sucessório</h3><p>Quem assume a gestão da fazenda, como os herdeiros recebem o patrimônio e como evitar conflitos — tudo estruturado antes que a sucessão aconteça por falecimento ou aposentadoria.</p></div>
+      <div class="matricula"><span class="reg">M-04</span><span class="tagline">Blindagem</span><h3>Proteção patrimonial</h3><p>Redução de riscos que possam comprometer os bens da família: separação de riscos operacionais, organização documental, revisão de contratos.</p></div>
+      <div class="matricula"><span class="reg">M-05</span><span class="tagline">Tributos</span><h3>Planejamento tributário</h3><p>ITCMD, ganho de capital, transferência de imóveis e doações em vida — sempre buscando reduzir custos tributários dentro da legalidade.</p></div>
+      <div class="matricula"><span class="reg">M-06</span><span class="tagline">Terra</span><h3>Gestão fundiária</h3><p>Matrículas de imóveis rurais, georreferenciamento, regularização de áreas, contratos de arrendamento e questões de posse — o lado mais "agro" do Patrimonial.</p></div>
+    </div>
+
+    <div class="section-head" style="margin-top:40px;">
+      <span class="eyebrow">Matrícula 002 · Rotina</span>
+      <h2>Como é o dia a dia de quem trabalha no Patrimonial</h2>
+    </div>
+    <div class="grid cols-2">
+      <div class="matricula" style="box-shadow:none;">
+        <p style="margin-top:0;">No dia a dia, um analista ou consultor patrimonial costuma:</p>
+        <ul style="padding-left:20px; font-size:14.5px; color:var(--ink-soft); margin:0;">
+          <li>Conferir documentos de clientes</li>
+          <li>Elaborar relatórios patrimoniais</li>
+          <li>Montar organogramas familiares e societários</li>
+          <li>Fazer levantamentos de bens</li>
+        </ul>
+      </div>
+      <div class="matricula" style="box-shadow:none;">
+        <p style="margin-top:0;">E também:</p>
+        <ul style="padding-left:20px; font-size:14.5px; color:var(--ink-soft); margin:0;">
+          <li>Participar de reuniões com produtores rurais</li>
+          <li>Auxiliar advogados, contadores e consultores tributários</li>
+          <li>Organizar processos de sucessão familiar</li>
+          <li>Atualizar cadastros e controles patrimoniais</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      Este material é um guia de estudo organizado a partir de fontes públicas e tem fins educativos. Não substitui orientação de um advogado, contador ou especialista para casos concretos — sempre que possível, valide o conteúdo com colegas mais experientes do setor.
+    </div>
+  </section>
+
+  <!-- ===================== TRILHA 90 DIAS ===================== -->
+  <section class="panel" id="panel-trilha">
+    <div class="section-head">
+      <span class="eyebrow">Matrícula 003 · Plano de estudo</span>
+      <h2>Trilha de 90 dias, em 4 fases</h2>
+      <p class="sub">Marque cada tópico conforme for estudando. O progresso é calculado em tempo real e aparece também na aba Visão Geral.</p>
+    </div>
+
+    <div class="phase open" data-phase="1">
+      <div class="phase-head">
+        <div class="ph-left"><div class="ph-num">1</div><div class="ph-titles"><h3>Entender o básico do Patrimonial</h3><span>2 semanas · linguagem do setor</span></div></div>
+        <div class="ph-chevron">⌄</div>
+      </div>
+      <div class="phase-body">
+        <div class="topic-group">
+          <h4>Direito das Coisas</h4>
+          <label class="check"><input type="checkbox"><span>Posse x Propriedade</span></label>
+          <label class="check"><input type="checkbox"><span>Usufruto</span></label>
+          <label class="check"><input type="checkbox"><span>Condomínio</span></label>
+          <label class="check"><input type="checkbox"><span>Registro de imóveis</span></label>
+          <label class="check"><input type="checkbox"><span>Matrícula de imóvel</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Direito de Família e Sucessões</h4>
+          <label class="check"><input type="checkbox"><span>Herança</span></label>
+          <label class="check"><input type="checkbox"><span>Inventário (judicial e extrajudicial)</span></label>
+          <label class="check"><input type="checkbox"><span>Testamento</span></label>
+          <label class="check"><input type="checkbox"><span>Doação em vida</span></label>
+          <label class="check"><input type="checkbox"><span>Legítima</span></label>
+          <label class="check"><input type="checkbox"><span>Herdeiros necessários</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Noções Tributárias</h4>
+          <label class="check"><input type="checkbox"><span>ITCMD</span></label>
+          <label class="check"><input type="checkbox"><span>ITBI</span></label>
+          <label class="check"><input type="checkbox"><span>Ganho de capital</span></label>
+          <label class="check"><input type="checkbox"><span>Imposto de Renda sobre bens</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-phase="2">
+      <div class="phase-head">
+        <div class="ph-left"><div class="ph-num">2</div><div class="ph-titles"><h3>O que mais aparece no Patrimonial</h3><span>3 a 4 semanas · holdings, sociedade e governança</span></div></div>
+        <div class="ph-chevron">⌄</div>
+      </div>
+      <div class="phase-body">
+        <div class="topic-group">
+          <h4>Holdings Familiares <span class="tagline" style="font-size:11px;">(tema mais importante)</span></h4>
+          <label class="check"><input type="checkbox"><span>O que é uma holding patrimonial</span></label>
+          <label class="check"><input type="checkbox"><span>O que é uma holding rural</span></label>
+          <label class="check"><input type="checkbox"><span>Vantagens</span></label>
+          <label class="check"><input type="checkbox"><span>Desvantagens</span></label>
+          <label class="check"><input type="checkbox"><span>Distribuição de cotas</span></label>
+          <label class="check"><input type="checkbox"><span>Administração da holding</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Estrutura Societária</h4>
+          <label class="check"><input type="checkbox"><span>Sociedade Limitada (LTDA)</span></label>
+          <label class="check"><input type="checkbox"><span>Sócio administrador</span></label>
+          <label class="check"><input type="checkbox"><span>Capital social</span></label>
+          <label class="check"><input type="checkbox"><span>Cotas</span></label>
+          <label class="check"><input type="checkbox"><span>Alteração contratual</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Governança Familiar</h4>
+          <label class="check"><input type="checkbox"><span>Conselho de família</span></label>
+          <label class="check"><input type="checkbox"><span>Protocolo familiar</span></label>
+          <label class="check"><input type="checkbox"><span>Sucessão de liderança</span></label>
+          <label class="check"><input type="checkbox"><span>Conflitos entre herdeiros</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-phase="3">
+      <div class="phase-head">
+        <div class="ph-left"><div class="ph-num">3</div><div class="ph-titles"><h3>Patrimonial voltado ao Agro</h3><span>onde você começa a se diferenciar</span></div></div>
+        <div class="ph-chevron">⌄</div>
+      </div>
+      <div class="phase-body">
+        <div class="topic-group">
+          <h4>Imóveis Rurais</h4>
+          <label class="check"><input type="checkbox"><span>Matrícula</span></label>
+          <label class="check"><input type="checkbox"><span>CCIR</span></label>
+          <label class="check"><input type="checkbox"><span>CAR</span></label>
+          <label class="check"><input type="checkbox"><span>ITR</span></label>
+          <label class="check"><input type="checkbox"><span>Georreferenciamento</span></label>
+          <label class="check"><input type="checkbox"><span>Certificações do INCRA</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Contratos Rurais</h4>
+          <label class="check"><input type="checkbox"><span>Arrendamento</span></label>
+          <label class="check"><input type="checkbox"><span>Parceria agrícola</span></label>
+          <label class="check"><input type="checkbox"><span>Comodato</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Regularização Fundiária</h4>
+          <label class="check"><input type="checkbox"><span>Averbações</span></label>
+          <label class="check"><input type="checkbox"><span>Retificações</span></label>
+          <label class="check"><input type="checkbox"><span>Registro de imóveis</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-phase="4">
+      <div class="phase-head">
+        <div class="ph-left"><div class="ph-num">4</div><div class="ph-titles"><h3>Ler documentos e dominar ferramentas</h3><span>segurança prática para o dia a dia</span></div></div>
+        <div class="ph-chevron">⌄</div>
+      </div>
+      <div class="phase-body">
+        <div class="topic-group">
+          <h4>Documentos para entender na prática</h4>
+          <label class="check"><input type="checkbox"><span>Matrículas de imóveis</span></label>
+          <label class="check"><input type="checkbox"><span>Contratos sociais</span></label>
+          <label class="check"><input type="checkbox"><span>Alterações contratuais</span></label>
+          <label class="check"><input type="checkbox"><span>Procurações</span></label>
+          <label class="check"><input type="checkbox"><span>Inventários</span></label>
+          <label class="check"><input type="checkbox"><span>Escrituras</span></label>
+          <label class="check"><input type="checkbox"><span>Contratos de arrendamento</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Excel</h4>
+          <label class="check"><input type="checkbox"><span>PROCV / PROCX</span></label>
+          <label class="check"><input type="checkbox"><span>Tabelas dinâmicas</span></label>
+          <label class="check"><input type="checkbox"><span>Filtros</span></label>
+          <label class="check"><input type="checkbox"><span>Organização de patrimônio em planilha</span></label>
+        </div>
+        <div class="topic-group">
+          <h4>Organogramas</h4>
+          <label class="check"><input type="checkbox"><span>Árvore familiar</span></label>
+          <label class="check"><input type="checkbox"><span>Estrutura societária</span></label>
+          <label class="check"><input type="checkbox"><span>Organograma empresarial</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:40px;">
+      <span class="eyebrow">Matrícula 004 · Calendário</span>
+      <h2>Plano de 90 dias, mês a mês</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><h4>Mês 1</h4><p>Direito das Coisas · Sucessões · ITCMD · Inventário</p></div>
+      <div class="tl-item"><h4>Mês 2</h4><p>Holdings · LTDA · Contrato social · Governança familiar</p></div>
+      <div class="tl-item"><h4>Mês 3</h4><p>Imóveis rurais · CCIR · CAR · Georreferenciamento · Arrendamento rural</p></div>
+    </div>
+    <div class="disclaimer">
+      <strong>Foco principal, se o tempo apertar:</strong> Sucessões, Holdings familiares, Direito societário básico e Documentação imobiliária rural. Esses quatro pilares representam boa parte do que você vai ouvir no dia a dia do setor.
+    </div>
+  </section>
+
+  <!-- ===================== CONTEÚDO ===================== -->
+  <section class="panel" id="panel-conteudo">
+    <div class="section-head">
+      <span class="eyebrow">Matrícula 005 · Material de estudo</span>
+      <h2>Conteúdo por tema</h2>
+      <p class="sub">Resumos explicativos de cada área. Abra um tema para ler os pontos principais — use como apoio antes ou depois das vídeo aulas.</p>
+    </div>
+
+    <details class="topic-card" open>
+      <summary>Direito das Coisas <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">posse</span><span class="pill">propriedade</span><span class="pill">usufruto</span><span class="pill">matrícula</span></div>
+      <div class="tc-body">
+        <h5>Posse x Propriedade</h5>
+        <p>Propriedade é o direito pleno sobre um bem — usar, gozar, dispor e reaver. Posse é a situação de fato: alguém se comporta como se fosse o dono, mesmo sem o ser formalmente. Um locatário tem posse direta do imóvel, mas não a propriedade; o proprietário mantém a posse indireta. Essa distinção aparece o tempo todo no Patrimonial, por exemplo quando uma fazenda é arrendada ou está em inventário.</p>
+        <h5>Usufruto</h5>
+        <p>É o direito de usar e tirar os frutos de um bem que pertence a outra pessoa (o "nu-proprietário"), sem poder vender ou transformar o bem. É a base de boa parte do planejamento sucessório por holding: os pais doam as cotas aos filhos, mas mantêm o usufruto e continuam no controle da gestão e da renda enquanto viverem.</p>
+        <h5>Condomínio</h5>
+        <p>Ocorre quando duas ou mais pessoas são proprietárias do mesmo bem, cada uma com uma fração ideal. É comum em imóveis herdados antes da partilha definitiva.</p>
+        <h5>Registro de imóveis e matrícula</h5>
+        <p>A matrícula é o "documento de identidade" do imóvel no Cartório de Registro de Imóveis: nela ficam registrados o histórico de proprietários, hipotecas, usufrutos, penhoras e qualquer alteração de área. Qualquer venda, doação, partilha ou georreferenciamento precisa ser averbado na matrícula para ter validade plena.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Sucessões: herança, inventário e testamento <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">inventário</span><span class="pill">testamento</span><span class="pill">legítima</span><span class="pill">herdeiros</span></div>
+      <div class="tc-body">
+        <h5>Inventário judicial x extrajudicial</h5>
+        <p>O inventário organiza a transmissão do patrimônio de quem faleceu. O <strong>extrajudicial</strong> é feito em cartório, por escritura pública, e é mais rápido e barato — mas só é possível se todos os herdeiros forem capazes, estiverem de acordo e não houver testamento. O <strong>judicial</strong> é obrigatório quando há testamento, herdeiro menor ou incapaz, ou desacordo entre herdeiros; tramita perante um juiz e costuma ser mais longo. Em ambos os casos, é necessário pagar o ITCMD.</p>
+        <h5>Testamento</h5>
+        <p>Documento pelo qual uma pessoa define, em vida, como quer que seus bens sejam distribuídos após a morte — respeitando sempre a legítima dos herdeiros necessários.</p>
+        <h5>Doação em vida</h5>
+        <p>Antecipa parte da herança ainda em vida, geralmente com reserva de usufruto. É uma das ferramentas mais usadas dentro de uma holding familiar para planejar a sucessão sem depender de inventário.</p>
+        <h5>Legítima e herdeiros necessários</h5>
+        <p>A legítima é a parcela do patrimônio (50%) que a lei reserva obrigatoriamente aos herdeiros necessários (descendentes, ascendentes e cônjuge), independentemente da vontade de quem doa ou testa. A outra metade pode ser livremente distribuída.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Tributação sobre o patrimônio <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">ITCMD</span><span class="pill">ITBI</span><span class="pill">ganho de capital</span></div>
+      <div class="tc-body">
+        <h5>ITCMD</h5>
+        <p>Imposto sobre Transmissão Causa Mortis e Doação. É um imposto estadual cobrado sempre que há transferência gratuita de bens — por herança (inventário) ou por doação em vida. A alíquota varia de estado para estado, e costuma ser um dos primeiros pontos analisados em qualquer planejamento sucessório.</p>
+        <h5>ITBI</h5>
+        <p>Imposto sobre Transmissão de Bens Imóveis, cobrado pelo município em transferências <em>onerosas</em> de imóveis (compra e venda), diferente do ITCMD, que incide sobre transferências gratuitas.</p>
+        <h5>Ganho de capital e Imposto de Renda</h5>
+        <p>Quando um bem é vendido por valor maior do que o declarado, a diferença ("ganho de capital") é tributada pelo Imposto de Renda. Esse cálculo é especialmente relevante quando bens são integralizados em uma holding ou vendidos após receberem novo valor de avaliação.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Holdings: patrimonial, familiar e rural <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">holding</span><span class="pill">cotas</span><span class="pill">sucessão</span></div>
+      <div class="tc-body">
+        <h5>O que é uma holding patrimonial</h5>
+        <p>É uma empresa (geralmente uma LTDA) criada não para vender produtos ou serviços, mas para concentrar e administrar bens — imóveis, participações em outras empresas, investimentos. Em vez de cada pessoa ser proprietária direta de um bem, a holding passa a ser proprietária, e as pessoas passam a ser sócias da holding, com cotas proporcionais.</p>
+        <h5>Holding familiar x holding patrimonial</h5>
+        <p>Toda holding familiar é, na prática, uma holding patrimonial — a diferença está no critério dos sócios e no objetivo. Na holding familiar, os sócios são parentes e o foco é a sucessão: organizar como o patrimônio passará para a próxima geração, com regras já definidas no contrato social, evitando inventário e reduzindo conflitos.</p>
+        <h5>Holding rural</h5>
+        <p>Segue a mesma lógica, mas reunindo fazendas, máquinas, rebanho e demais ativos do agronegócio familiar — muito comum quando a família tem mais de uma propriedade rural e quer profissionalizar a gestão e facilitar a sucessão entre os filhos.</p>
+        <h5>Vantagens</h5>
+        <ul>
+          <li>Gestão centralizada do patrimônio em um único veículo</li>
+          <li>Sucessão planejada via doação de cotas, com reserva de usufruto</li>
+          <li>Redução de tempo e custo com inventário</li>
+          <li>Possível eficiência tributária lícita</li>
+        </ul>
+        <h5>Desvantagens</h5>
+        <ul>
+          <li>Custos de constituição e manutenção (contabilidade, obrigações legais)</li>
+          <li>Não protege contra fraude ou confusão patrimonial — exige rigor contábil</li>
+          <li>Precisa ser desenhada caso a caso; copiar o modelo de outra família raramente funciona bem</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Estrutura societária: LTDA, cotas e contrato social <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">LTDA</span><span class="pill">capital social</span><span class="pill">contrato social</span></div>
+      <div class="tc-body">
+        <h5>Sociedade Limitada (LTDA)</h5>
+        <p>É o tipo de empresa mais usado para holdings familiares. Os sócios respondem apenas até o limite do capital social, o que protege o patrimônio pessoal dos riscos do negócio. Tudo o que rege a sociedade — sócios, capital, administração, regras de saída — está no contrato social.</p>
+        <h5>Capital social e cotas</h5>
+        <p>O capital social é dividido em cotas, que podem ser iguais ou desiguais entre os sócios. A cota representa a participação de cada sócio no patrimônio e nos resultados da empresa. Cotas podem ser doadas, cedidas ou herdadas, sempre observando o que diz o contrato social.</p>
+        <h5>Sócio administrador</h5>
+        <p>Pessoa designada no contrato social (ou em ato separado) para representar e gerir a sociedade. Em holdings familiares, é comum que os pais sejam administradores enquanto vivos, mesmo após doarem as cotas aos filhos.</p>
+        <h5>Alteração contratual</h5>
+        <p>Qualquer mudança relevante — entrada/saída de sócio, mudança de cotas, troca de administrador — exige uma alteração do contrato social, registrada na Junta Comercial.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Governança familiar <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">conselho de família</span><span class="pill">protocolo familiar</span></div>
+      <div class="tc-body">
+        <h5>Conselho de Família</h5>
+        <p>Espaço de diálogo entre os membros da família para alinhar valores, visão de longo prazo e decisões estratégicas sobre o patrimônio — separado do dia a dia operacional do negócio. Costuma discutir sucessão de liderança, formação dos herdeiros e resolução de conflitos.</p>
+        <h5>Protocolo familiar</h5>
+        <p>Também chamado de "constituição da família": é um documento que registra os princípios, regras e acordos que orientam o relacionamento entre família e patrimônio — por exemplo, quem pode trabalhar na empresa, como decisões são tomadas, como conflitos são resolvidos. É uma das ferramentas mais valorizadas em famílias do agronegócio que querem evitar disputas entre gerações.</p>
+        <h5>Por que isso importa no Patrimonial</h5>
+        <p>Estruturas jurídicas (holding, testamento) resolvem a parte formal da sucessão, mas não resolvem sozinhas os conflitos familiares. A governança familiar é o complemento "humano" que sustenta a estrutura jurídica no longo prazo.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Imóveis rurais: matrícula, CCIR, CAR e georreferenciamento <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">CCIR</span><span class="pill">CAR</span><span class="pill">ITR</span><span class="pill">INCRA</span></div>
+      <div class="tc-body">
+        <h5>CCIR</h5>
+        <p>Certificado de Cadastro de Imóvel Rural, emitido pelo INCRA. É a "identidade cadastral" da propriedade e é exigido para qualquer transação que altere a área ou o titular do imóvel — venda, partilha, financiamento.</p>
+        <h5>CAR</h5>
+        <p>Cadastro Ambiental Rural — registro eletrônico obrigatório que reúne as informações ambientais do imóvel (Área de Preservação Permanente, Reserva Legal). É feito no sistema SICAR e impacta diretamente a regularidade do imóvel para venda ou crédito rural.</p>
+        <h5>ITR</h5>
+        <p>Imposto Territorial Rural, federal, equivalente ao IPTU para imóveis rurais. A declaração (DITR) é anual e precisa ser consistente com os dados do CCIR e do CAR.</p>
+        <h5>Georreferenciamento</h5>
+        <p>Procedimento técnico que define com precisão os limites, a área e a localização do imóvel por coordenadas geográficas, certificado pelo INCRA. É obrigatório para qualquer alteração registrada na matrícula — venda, desmembramento, inventário — sempre que a área do imóvel atingir o tamanho definido em lei (e, a partir de certas mudanças, mesmo para áreas menores).</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Contratos rurais: arrendamento, parceria e comodato <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">arrendamento</span><span class="pill">parceria</span><span class="pill">comodato</span></div>
+      <div class="tc-body">
+        <h5>Arrendamento rural</h5>
+        <p>O proprietário cede o uso da terra mediante um valor fixo (aluguel), independentemente do resultado da safra. O risco da atividade é todo do arrendatário; o proprietário recebe o valor acordado mesmo se houver prejuízo.</p>
+        <h5>Parceria agrícola</h5>
+        <p>O proprietário cede a terra e divide com o parceiro os riscos e os resultados da produção — funciona como uma sociedade de capital (a terra) e trabalho (a exploração). Se a safra for ótima, o proprietário ganha mais; se houver prejuízo, ele também perde.</p>
+        <h5>Comodato rural</h5>
+        <p>Empréstimo gratuito da terra, sem pagamento. É comum como forma de manter a terra ocupada e produtiva, evitando invasões, em situações em que o proprietário não cobra contraprestação.</p>
+      </div>
+    </details>
+
+    <details class="topic-card">
+      <summary>Documentos do dia a dia: o que cada um significa <span class="plus">+</span></summary>
+      <div class="pill-row"><span class="pill">matrícula</span><span class="pill">escritura</span><span class="pill">procuração</span></div>
+      <div class="tc-body">
+        <h5>Matrícula</h5>
+        <p>Histórico completo do imóvel no Cartório de Registro de Imóveis: proprietários, ônus, hipotecas, usufrutos e alterações de área.</p>
+        <h5>Escritura</h5>
+        <p>Documento público, lavrado em cartório de notas, que formaliza um negócio jurídico (compra, venda, doação). Depois de feita, precisa ser registrada na matrícula do imóvel para ter efeito contra terceiros.</p>
+        <h5>Contrato social e alteração contratual</h5>
+        <p>Documento que rege a sociedade (sócios, cotas, administração) e o documento que formaliza qualquer mudança nessas regras.</p>
+        <h5>Procuração</h5>
+        <p>Documento pelo qual alguém autoriza outra pessoa a agir em seu nome — comum quando um membro da família mora longe e precisa que outro represente seus interesses em assembleias ou assinaturas.</p>
+        <h5>Inventário e formal de partilha</h5>
+        <p>O processo de inventário termina em um "formal de partilha" (judicial) ou escritura de inventário (extrajudicial), documento que formaliza como os bens do falecido foram divididos entre os herdeiros.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== VÍDEOS ===================== -->
+  <section class="panel" id="panel-videos">
+    <div class="section-head">
+      <span class="eyebrow">Matrícula 006 · Vídeo aulas</span>
+      <h2>Vídeo aulas selecionadas por tema</h2>
+      <p class="sub">Vídeos públicos do YouTube, organizados na mesma ordem da trilha de 90 dias. Assista junto com a leitura da aba Conteúdo.</p>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 1 — Direito das Coisas</h3>
+      <p class="desc">Base de posse, propriedade e usufruto — vocabulário que aparece em praticamente todo documento patrimonial.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/hce8iKimiGU" title="Posse x Propriedade" allowfullscreen></iframe></div><div class="vinfo"><h4>Posse x Propriedade — resumo e exemplos</h4><span>Direito das Coisas</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/6WER2keWX3k" title="Conceitos e fundamentos de posse" allowfullscreen></iframe></div><div class="vinfo"><h4>Conceitos e fundamentos de posse</h4><span>Direito Civil</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 1 — Sucessões e inventário</h3>
+      <p class="desc">Diferença entre inventário judicial e extrajudicial, e quando cada um é obrigatório.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/leOUo8vBLfA" title="Inventário judicial ou extrajudicial" allowfullscreen></iframe></div><div class="vinfo"><h4>Inventário judicial ou extrajudicial: diferenças</h4><span>Sucessões</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/XBBcFpTHr4I" title="Inventário judicial e extrajudicial" allowfullscreen></iframe></div><div class="vinfo"><h4>Qual é o melhor: judicial ou extrajudicial?</h4><span>Sucessões</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 1 — ITCMD</h3>
+      <p class="desc">O imposto que aparece em praticamente todo inventário, doação ou planejamento sucessório.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/OIhL7NwxELo" title="ITCMD como funciona" allowfullscreen></iframe></div><div class="vinfo"><h4>ITCMD: como funciona o imposto sobre herança</h4><span>Tributário</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/OB6RvhmVvDg" title="O que é ITCMD" allowfullscreen></iframe></div><div class="vinfo"><h4>Aula 12 — O que é ITCMD?</h4><span>Tributário</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 2 — Holdings familiares</h3>
+      <p class="desc">O tema mais importante da trilha: o que é, para que serve e como se diferencia da holding patrimonial comum.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/_yyKLt4PPtI" title="Holding familiar, patrimonial e imobiliária" allowfullscreen></iframe></div><div class="vinfo"><h4>Holding familiar, patrimonial e imobiliária</h4><span>Holdings</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/s5yhGLtIQVo" title="Holding patrimonial x holding familiar" allowfullscreen></iframe></div><div class="vinfo"><h4>Diferença entre holding patrimonial e familiar</h4><span>Holdings</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 2 — Estrutura societária</h3>
+      <p class="desc">Como nasce e como funciona uma LTDA na prática, base de qualquer holding.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/UMluYwqsuBE" title="Como montar um contrato social" allowfullscreen></iframe></div><div class="vinfo"><h4>Roteiro prático de contrato social</h4><span>Societário</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 2 — Governança familiar</h3>
+      <p class="desc">Conselho de família e protocolo familiar — o que fazem e por que aparecem tanto em empresas familiares do agro.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/6iD5GY1T2eg" title="Protocolo, conselho e comitês de família" allowfullscreen></iframe></div><div class="vinfo"><h4>Protocolo da Família, Conselho e Comitês</h4><span>Governança</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/7gj_LHZ482w" title="Função do conselho de família" allowfullscreen></iframe></div><div class="vinfo"><h4>Qual a função do Conselho de Família?</h4><span>Governança</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 3 — Agro: CAR e georreferenciamento</h3>
+      <p class="desc">Os documentos que mais aparecem quando o patrimônio inclui imóveis rurais.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/1CTpyweQAKk" title="Como descobrir se um imóvel possui CAR" allowfullscreen></iframe></div><div class="vinfo"><h4>Como descobrir se um imóvel rural possui CAR</h4><span>Agro</span></div></div>
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/s6jdbTL2Ddw" title="Georreferenciamento de imóvel rural" allowfullscreen></iframe></div><div class="vinfo"><h4>Georreferenciamento de imóvel rural</h4><span>Agro</span></div></div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3>Fase 3 — Contratos rurais</h3>
+      <p class="desc">Arrendamento x parceria agrícola: a diferença que muda inclusive a forma de tributação.</p>
+      <div class="video-grid">
+        <div class="video-card"><div class="frame-wrap"><iframe src="https://www.youtube.com/embed/BOITIEKEuBc" title="Arrendamento e parceria rural" allowfullscreen></iframe></div><div class="vinfo"><h4>Arrendamento e parceria rural: diferenças</h4><span>Contratos rurais</span></div></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      Os vídeos são de canais públicos do YouTube e foram selecionados por tema; o conteúdo é de responsabilidade de cada canal. Sempre confira a data do vídeo, já que alíquotas e prazos legais (ITCMD, georreferenciamento) mudam com frequência.
+    </div>
+  </section>
+
+  <!-- ===================== GLOSSÁRIO ===================== -->
+  <section class="panel" id="panel-glossario">
+    <div class="section-head">
+      <span class="eyebrow">Matrícula 007 · Referência rápida</span>
+      <h2>Glossário</h2>
+      <p class="sub">Siglas e termos que vão aparecer nas suas primeiras semanas no setor.</p>
+    </div>
+    <div class="gloss-grid">
+      <div class="gloss-item"><span class="term">ITCMD</span><p>Imposto sobre Transmissão Causa Mortis e Doação — estadual, incide sobre herança e doação.</p></div>
+      <div class="gloss-item"><span class="term">ITBI</span><p>Imposto sobre Transmissão de Bens Imóveis — municipal, incide sobre compra e venda.</p></div>
+      <div class="gloss-item"><span class="term">CCIR</span><p>Certificado de Cadastro de Imóvel Rural, emitido pelo INCRA.</p></div>
+      <div class="gloss-item"><span class="term">CAR</span><p>Cadastro Ambiental Rural — registro eletrônico obrigatório com informações ambientais do imóvel.</p></div>
+      <div class="gloss-item"><span class="term">ITR</span><p>Imposto Territorial Rural — federal, equivalente ao IPTU em imóveis rurais.</p></div>
+      <div class="gloss-item"><span class="term">INCRA</span><p>Instituto Nacional de Colonização e Reforma Agrária — gerencia o cadastro de imóveis rurais.</p></div>
+      <div class="gloss-item"><span class="term">SICAR</span><p>Sistema Nacional de Cadastro Ambiental Rural, onde o CAR é registrado.</p></div>
+      <div class="gloss-item"><span class="term">LTDA</span><p>Sociedade Limitada — tipo societário mais usado em holdings familiares.</p></div>
+      <div class="gloss-item"><span class="term">Holding</span><p>Empresa criada para concentrar e administrar bens da família, não para vender produtos/serviços.</p></div>
+      <div class="gloss-item"><span class="term">Usufruto</span><p>Direito de usar e tirar os frutos de um bem alheio, sem poder dele dispor.</p></div>
+      <div class="gloss-item"><span class="term">Legítima</span><p>Parte do patrimônio (50%) reservada por lei aos herdeiros necessários.</p></div>
+      <div class="gloss-item"><span class="term">Inventário</span><p>Processo de transmissão dos bens de quem faleceu aos herdeiros — judicial ou extrajudicial.</p></div>
+      <div class="gloss-item"><span class="term">Matrícula</span><p>Histórico oficial do imóvel no Cartório de Registro de Imóveis.</p></div>
+      <div class="gloss-item"><span class="term">Georreferenciamento</span><p>Definição técnica e certificada dos limites e coordenadas de um imóvel rural.</p></div>
+      <div class="gloss-item"><span class="term">Protocolo familiar</span><p>Documento com os princípios e regras que orientam a relação entre família e patrimônio.</p></div>
+      <div class="gloss-item"><span class="term">Arrendamento</span><p>Cessão da terra mediante valor fixo, sem dividir os riscos da produção.</p></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Trilha de estudo organizada para apoiar sua transição para o setor Patrimonial. Conteúdo educativo — sempre valide pontos específicos com profissionais da área.
+</footer>
+
+<script>
+  // ----- Navegação por abas -----
+  const navButtons = document.querySelectorAll('#tabNav button');
+  const panels = document.querySelectorAll('.panel');
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      window.scrollTo({top:0, behavior:'instant'});
+    });
+  });
+
+  // ----- Acordeão das fases -----
+  document.querySelectorAll('.phase-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.parentElement.classList.toggle('open');
+    });
+  });
+
+  // ----- Progresso (em memória, válido durante a sessão) -----
+  const checkboxes = Array.from(document.querySelectorAll('.phase input[type="checkbox"]'));
+  function updateProgress(){
+    const total = checkboxes.length;
+    const done = checkboxes.filter(c => c.checked).length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('pctText').textContent = pct + '%';
+    document.getElementById('progressCount').textContent = done + ' de ' + total + ' tópicos concluídos';
+  }
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const span = cb.parentElement.querySelector('span');
+      span.classList.toggle('done', cb.checked);
+      updateProgress();
+    });
+  });
+  updateProgress();
+</script>
+</body>
+</html>
